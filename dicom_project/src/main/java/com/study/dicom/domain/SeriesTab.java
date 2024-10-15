@@ -1,20 +1,19 @@
 package com.study.dicom.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import lombok.Data;
 
+@Data
 @Entity(name = "SERIESTAB")
 public class SeriesTab {
-
-    @Id
-    @Column(name = "STUDYKEY", nullable = false)
-    private Long studyKey;
-
-    @Id
-    @Column(name = "SERIESKEY", nullable = false)
-    private Long seriesKey;
-
+	
+	@EmbeddedId
+    private SeriesTabId id;
+ 
+	
     @Column(name = "STUDYINSUID", nullable = false, length = 64)
     private String studyInsUid;
 
