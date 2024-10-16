@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>PACSPLUS</title>
+    <!-- 인라인 스타일 추가 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        #logo {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #search-section, #result-section, #past-record-section, #report-section {
+            width: 80%;
+            margin: 20px 0;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        td button {
+            background-color: #2196F3;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        td button:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+	<div th:fragment="homepage-menu">
+    <!-- 상단 로고 -->
+    <div id="logo">
+        <img src="path_to_logo" alt="PACSPLUS">
+    </div>
+
+    <!-- 검색 섹션 -->
+    <div id="search-section">
+        <form th:action="@{/search}" method="get">
+            <label for="patientId">환자 아이디</label>
+            <input type="text" id="patientId" name="patientId">
+            
+            <label for="patientName">환자 이름</label>
+            <input type="text" id="patientName" name="patientName">
+            
+            <label for="status">판독 상태</label>
+            <select id="status" name="status">
+                <option value="all">전체</option>
+                <option value="done">완료</option>
+                <option value="pending">대기 중</option>
+            </select>
+
+            <button type="submit">검색</button>
+        </form>
+    </div>
+
+    <!-- 검색 결과 테이블 -->
+    <div id="result-section">
+        <table>
+            <thead>
+                <tr>
+                    <th>환자 아이디</th>
+                    <th>환자 이름</th>
+                    <th>검사장비</th>
+                    <th>검사일시</th>
+                    <th>판독 상태</th>
+                    <th>시리즈</th>
+                    <th>이미지</th>
+                    <th>Verify</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="result : ${results}">
+                    <td th:text="${result.patientId}"></td>
+                    <td th:text="${result.patientName}"></td>
+                    <td th:text="${result.examDevice}"></td>
+                    <td th:text="${result.examDateTime}"></td>
+                    <td th:text="${result.status}"></td>
+                    <td th:text="${result.series}"></td>
+                    <td th:text="${result.imageCount}"></td>
+                    <td><button type="button">Verify</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 과거 검사 이력 섹션 -->
+    <div id="past-record-section">
+        <h2>과거 검사 이력</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>검사장비</th>
+                    <th>검사설명</th>
+                    <th>검사일시</th>
+                    <th>판독 상태</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="history : ${historyList}">
+                    <td th:text="${history.device}"></td>
+                    <td th:text="${history.description}"></td>
+                    <td th:text="${history.dateTime}"></td>
+                    <td th:text="${history.status}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 리포트 섹션 -->
+    <div id="report-section">
+        <h2>리포트</h2>
+        <form th:action="@{/report}" method="post">
+            <label for="comments">코멘트</label>
+            <textarea id="comments" name="comments" rows="4"></textarea>
+            
+            <label for="conclusion">결론</label>
+            <input type="text" id="conclusion" name="conclusion">
+            
+            <label for="suggestion">제안</label>
+            <input type="text" id="suggestion" name="suggestion">
+            
+            <button type="submit">저장</button>
+        </form>
+    </div>
+	</div>
+</body>
+</html>

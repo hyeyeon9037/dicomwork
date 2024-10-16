@@ -13,13 +13,13 @@ import com.study.dicom.service.SeriesTabService;
 
 @Controller
 public class SeriesTabController {
-
+	
 	@Autowired
 	SeriesTabService seriesTabService;
 	
 	@GetMapping("/seriesForm")
-	public String seriesForm(@RequestParam(value="studykey") Long studykey, Model model) {
-		List<SeriesTab> series = seriesTabService.seriesList(studykey);
+	public String seriesForm(@RequestParam(value="studyKey") Long studyKey , Model model) {
+		List<SeriesTab> series = seriesTabService.seriesList(studyKey);
 		model.addAttribute("series",series);
 		return "Series/SeriesForm";
 	}

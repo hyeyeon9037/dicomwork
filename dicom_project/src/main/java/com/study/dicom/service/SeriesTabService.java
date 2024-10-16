@@ -15,7 +15,7 @@ public class SeriesTabService {
 	@Autowired
 	SeriesTabRepository seriesTabRepository;
 	
-	public List<SeriesTab> seriesList( Long studyKey) {
+	public List<SeriesTab> seriesList(Long studyKey) {
 		return seriesTabRepository.findAllByIdStudyKey(studyKey);
 	}
 }
