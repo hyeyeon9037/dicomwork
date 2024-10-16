@@ -12,7 +12,6 @@ public class SeriesTab {
 	
 	@EmbeddedId
     private SeriesTabId id;
- 
 	
     @Column(name = "STUDYINSUID", nullable = false, length = 64)
     private String studyInsUid;

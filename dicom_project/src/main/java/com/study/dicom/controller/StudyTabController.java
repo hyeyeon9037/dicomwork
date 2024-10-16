@@ -23,4 +23,5 @@ public class StudyTabController {
 		model.addAttribute("study",study);
 		return "Study/StudyList";
 	}
+	
 }
