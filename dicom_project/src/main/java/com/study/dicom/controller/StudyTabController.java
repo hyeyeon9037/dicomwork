@@ -17,7 +17,7 @@ public class StudyTabController {
 	@Autowired
 	StudyTabService studyTabService;
 	
-	@GetMapping("/StudyTabList")
+	@GetMapping("/studytablist")
 	public String list(Model model) {
 		List<StudyTab> study = studyTabService.list();
 		model.addAttribute("study",study);
