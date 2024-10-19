@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>검색 폼</title>
+</head>
+
+<div th:fragment="fragment-menu">
+	
+	<body>
+		<div onclick="location.href='studytablist'" style="cursor: pointer; color: #007BFF; text-decoration: underline; margin-bottom: 20px;">전체조회</div>
+		<form action="">
+			<div class="container">
+				<div class="search-bar">
+					<input type="text" placeholder="환자 아이디" name="pid">
+					<input type="text" placeholder="환자 이름" name="pName">
+					<select name="">
+						<option value="0">판독 상태</option>
+						<option value="1">판독</option>
+						<option value="2">예비 판독</option>
+					</select>
+					<button type="submit">검색</button>
+				</div>
+
+				<div class="date-filters">
+					<button class="active">전체</button>
+					<button>1일</button>
+					<button>3일</button>
+					<button>1주일</button>
+					<button>제설정</button>
+				</div>
+				
+				<!-- 결과 테이블 -->
+		        <div class="result-section">
+		            <div class="past-exam-history">
+		                <h3>과거 검사 이력</h3>
+		                <table>
+		                    <thead>
+		                        <tr>
+		                            <th>검사 장비</th>
+		                            <th>검사 설명</th>
+		                            <th>검사 일시</th>
+		                            <th>판독 상태</th>
+		                            <th>시리즈</th>
+		                            <th>이미지</th>
+		                            <th>Verify</th>
+		                        </tr>
+		                    </thead>
+		                    <tbody>
+		                        <tr>
+		                            <td colspan="7">결과 없음</td>
+		                        </tr>
+		                    </tbody>
+		                </table>
+		            </div>
+		        </div>
+
+                <!-- 리포트 섹션 -->
+                <div class="report-section">
+                    <h3>리포트</h3>
+                    <textarea placeholder="코멘트"></textarea>
+                    <textarea placeholder="타석"></textarea>
+                    <textarea placeholder="결론"></textarea>
+                    <textarea placeholder="진정"></textarea>
+
+                    <div class="report-actions">
+                        <label for="macro">판독 매크로</label>
+                        <select id="macro" name="macro">
+                            <option value="common">Common</option>
+                            <option value="report">Report Code</option>
+                            <option value="none">None</option>
+                        </select>
+
+                        <input type="text" placeholder="예비판독의">
+                        <input type="text" placeholder="판독의1">
+                        <input type="text" placeholder="판독의2">
+
+                        <button type="button" class="verify-btn">판독</button>
+                        <button type="button" class="pre-verify-btn">예비판독</button>
+                    </div>
+                </div>
+                
+		</form>
+		
+		<style>
+			/* 전역 스타일 */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #1b1b1b;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+}
+
+.container {
+	width: 100%;
+	max-width: 1200px;
+	margin: 20px auto;
+	background-color: #2c2c2c;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-section {
+	margin-bottom: 20px;
+}
+
+.search-bar {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 10px;
+}
+
+.search-bar input, .search-bar select {
+	padding: 10px;
+	font-size: 16px;
+	border: none;
+	background-color: #333;
+	color: white;
+	border-radius: 4px;
+}
+
+.search-bar button {
+	padding: 10px 20px;
+	background-color: #e74c3c;
+	border: none;
+	border-radius: 4px;
+	color: white;
+	cursor: pointer;
+}
+
+.date-filters {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+.date-filters button {
+	padding: 10px;
+	background-color: #444;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.date-filters button.active {
+	background-color: #e74c3c;
+}
+
+.result-section, .past-exam-history {
+	margin-top: 20px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: #333;
+	color: white;
+	margin-bottom: 20px;
+}
+
+table th, table td {
+	padding: 10px;
+	border: 1px solid #444;
+	text-align: center;
+}
+
+.report-section {
+	display: flex;
+	justify-content: space-between;
+}
+
+.report-details {
+	width: 48%;
+}
+
+.report-details textarea {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 10px;
+	background-color: #333;
+	color: white;
+	border: 1px solid #444;
+	border-radius: 4px;
+}
+
+.report-actions input, .report-actions select {
+	width: 100%;
+	padding: 10px;
+	margin-bottom: 10px;
+	background-color: #333;
+	color: white;
+	border: 1px solid #444;
+	border-radius: 4px;
+}
+
+.report-actions .buttons {
+	display: flex;
+	gap: 10px;
+}
+
+.verify-btn {
+	background-color: #27ae60;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	color: white;
+	cursor: pointer;
+}
+
+.pre-verify-btn {
+	background-color: #f39c12;
+	padding: 10px;
+	width: 100%;
+	border: none;
+	color: white;
+	cursor: pointer;
+}
+
+.verify-btn:hover, .pre-verify-btn:hover {
+	opacity: 0.9;
+}
+
+		</style>
+</div>
+
+</body>
+</div>
+
+</html>
