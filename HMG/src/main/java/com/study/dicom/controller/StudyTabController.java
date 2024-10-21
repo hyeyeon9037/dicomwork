@@ -24,7 +24,7 @@ public class StudyTabController {
 		return "admin/Study/StudyList";
 		
 	}
-
+	
 	 @GetMapping("/search")
 	    public String search(@RequestParam(value = "pid") String pid,
 	                         @RequestParam(value = "pname") String pname,

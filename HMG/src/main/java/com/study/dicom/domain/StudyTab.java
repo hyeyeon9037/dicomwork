@@ -94,7 +94,7 @@ public class StudyTab {
     @Column(name = "STATIONNAME", length = 64)
     private String stationName;
 
-    @Column(name = "STEREOCOUNT", columnDefinition = "NUMBER DEFAULT 0")
+    @Column(name = "STEREOCOUNT", nullable = false, columnDefinition = "NUMBER DEFAULT 0")
     private Long stereoCount;
 
     @Column(name = "PROTOCOLNAME", length = 256)

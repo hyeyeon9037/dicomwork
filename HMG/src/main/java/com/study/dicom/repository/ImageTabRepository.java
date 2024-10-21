@@ -14,6 +14,9 @@ public interface ImageTabRepository extends JpaRepository<ImageTab,ImageTabId> {
 
 	ArrayList<ImageTab> findByIdStudyKeyAndIdSeriesKeyOrderByIdImageKey(Long studyKey, Long seriesKey);
 
+	//detail
+	ArrayList<ImageTab> findByIdStudyKeyAndIdSeriesKey(Long studyKey, Long seriesKey);
+
 //	ArrayList<ImageTab> findByIdStudyKeyOrderByIdSeriesKeyAscIdImageKeyAsc(Long studyKey);
  
 }
