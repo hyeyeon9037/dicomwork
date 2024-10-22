@@ -53,7 +53,24 @@
 			cursor: pointer;
 		}
 
+		.date-filters {
+			display: flex;
+			gap: 10px;
+		}
 
+		.date-filters button {
+			background-color: #3e3e3e;
+			color: #fff;
+			border: none;
+			padding: 8px 16px;
+			border-radius: 50%;
+			cursor: pointer;
+		}
+
+		.date-filters button.active,
+		.search-bar button:hover {
+			background-color: #880000;
+		}
 	</style>
 </head>
 
@@ -109,15 +126,36 @@
 						<option value="VF">VF</option>
 						<option value="XA">XA</option>
 					</select>
-					<button type="submit">검색</button>
-					
+					    <select name="modality">
+                    <option value="">검사장비</option>
+                    <option value="AS">AS</option>
+                    <option value="XA">XA</option>
+                </select>
+                <button type="submit">검색</button>>
+				</div>
+				
+				
+				
+				<div class="date-filters">
 					<button type="button" class="active" onclick="location.href='StudyTabList'">전체조회</button>
-
+					
+					
+				</div>
 		</form>
+            <!-- 날짜 선택 필드 추가 -->
+			<form action="/searchByDate">		
+					<input type="date" name="startDate" placeholder="시작 날짜">
+            	    <input type="date" name="endDate" placeholder="종료 날짜">
+        	        <button type="submit">검색</button>>
+			</form>
+				
+				
+				
+				
+				
 </div>
 
 
 </body>
-</div>
 
 </html>
