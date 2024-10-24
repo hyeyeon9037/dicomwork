@@ -1,8 +1,9 @@
 package com.study.dicom.service;
 
-import java.util.List;
-
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.study.dicom.domain.StudyTab;
@@ -10,22 +11,22 @@ import com.study.dicom.repository.StudyTabRepository;
 
 @Service
 public class StudyTabService {
+	ArrayList<StudyTab> list = new ArrayList<StudyTab>();
+	
+	@Autowired
+	StudyTabRepository studyTabRepository;
 
-    @Autowired
-    StudyTabRepository studyTabRepository;
-
-    // 기본 목록 조회
-    public List<StudyTab> list() {
-        return studyTabRepository.findAllByOrderByStudyKeyDesc();
+	public Page<StudyTab> list(PageRequest of) {
+		return studyTabRepository.findAllByOrderByStudyKeyDesc(of);
+	}	
+	
+	public Page<StudyTab> searchStudyTab(PageRequest of,String pid, String pname, Long reportStatus, String modality) {
+        return studyTabRepository.findStudyTabsByCriteria(of,pid, pname, reportStatus, modality);
     }
 
-    // 기존 필터 검색 (pid, pname, reportStatus, modality)
-    public List<StudyTab> searchStudyTab(String pid, String pname, Long reportStatus, String modality) {
-        return studyTabRepository.findStudyTabsByCriteria(pid, pname, reportStatus, modality);
-    }
+	public Page<StudyTab> pastList(PageRequest of, String pid, String pname) {
+		return studyTabRepository.findAllByPidAndPname(of,pid,pname);
+	}
 
-    // studyDate를 기준으로 날짜 범위 검색
-    public List<StudyTab> findStudyByDateRange(String startDate, String endDate) {
-        return studyTabRepository.findByStudyDateBetween(startDate, endDate);
-    }
+	
 }
