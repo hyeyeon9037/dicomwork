@@ -1,26 +1,73 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>달력 연동 검색</title>
+    <title>달력 선택 및 날짜 전송</title>
     <style>
-        /* 여기에 달력 및 스타일 정의 */
+        /* 기본 스타일 정의 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #ffffff;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+            font-size: 16px;
+        }
+        th {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        td {
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        td:hover {
+            background-color: #e6ffe6; /* Hover 효과 */
+        }
+        .selected {
+            background-color: #00cc44; /* 초록색 */
+            color: white;
+            border-radius: 50%; /* 동그랗게 만들기 */
+        }
+        .in-range {
+            background-color: #ccffcc; /* 선택 범위는 연한 초록색 */
+            border-radius: 50%;
+        }
+        .calendar-panel {
+            margin-top: 20px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .date-input {
+            font-size: 18px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            text-align: center;
+            color: #333;
+        }
     </style>
 </head>
 <body>
-<div th:fragment="fragment-calender">
+
 <div class="container">
-    <!-- 검색 및 달력 연동 -->
-    <form th:action="@{/searchByDate}" method="get">
-        <div class="calendar-section">
-            <div class="month-navigation">
-                <button id="prev-month">&lt;</button>
-                <p id="calendar-title">2024년 10월</p>
-                <button id="next-month">&gt;</button>
-            </div>
-            <table class="calendar" id="calendar-table">
-                <thead>
+    <div class="calendar-panel">
+        <div id="calendar-title" style="font-size: 24px; margin-bottom: 20px; text-align: center;"></div>
+        <button id="prev-month">이전 달</button>
+        <button id="next-month">다음 달</button>
+        <table>
+            <thead>
                 <tr>
                     <th>일</th>
                     <th>월</th>
@@ -30,74 +77,146 @@
                     <th>금</th>
                     <th>토</th>
                 </tr>
-                </thead>
-                <tbody id="calendar-body">
-                <!-- 달력 내용 동적 추가 -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 날짜 필터 섹션 -->
-        <div class="input-section">
-            <label>시작일</label>
-            <input type="date" id="start-date" name="startDate" class="date-picker">
-            <label>종료일</label>
-            <input type="date" id="end-date" name="endDate" class="date-picker">
-
-            <div class="buttons">
-                <button type="submit" class="search-btn">조회</button>
-                <button type="button" class="reset-btn" id="reset-btn">재설정</button>
-            </div>
-        </div>
-    </form>
-
-    <!-- 검색 결과를 표시할 테이블 -->
-    <div class="result-table">
-        <table>
-            <thead>
-            <tr>
-                <th>환자 ID</th>
-                <th>환자 이름</th>
-                <th>검사 장비</th>
-                <th>검사 설명</th>
-                <th>검사 일시</th>
-                <th>판독 상태</th>
-            </tr>
             </thead>
-            <tbody>
-                <tr th:each="study : ${studyList}">
-                    <td th:text="${study.pid}"></td>
-                    <td th:text="${study.pname}"></td>
-                    <td th:text="${study.modality}"></td>
-                    <td th:text="${study.studyDesc}"></td>
-                    <td th:text="${study.studyDate}"></td>
-                    <td th:text="${study.reportStatus}"></td>
-                </tr>
+            <tbody id="calendar-body">
+                <!-- 달력 날짜가 렌더링되는 영역 -->
             </tbody>
         </table>
     </div>
-</div>
-</div>
-<script>
-    // 달력 동적 생성 스크립트 (기존과 동일)
-    document.addEventListener("DOMContentLoaded", function () {
-        const today = new Date();
-        let currentYear = today.getFullYear();
-        let currentMonth = today.getMonth();
 
-        // 달력 업데이트 함수 정의 (기존 스크립트와 동일)
-        function updateCalendar() {
-            // 달력 업데이트 로직
+    <!-- 검사일자 선택 -->
+    <div>
+        <label>검사일자:</label>
+        <input type="text" id="start-date" class="date-input" readonly>
+        ~
+        <input type="text" id="end-date" class="date-input" readonly>
+    </div>
+
+    <div class="buttons">
+        <!-- 새로 추가된 버튼 -->
+        <button type="button" onclick=""> 뀨우 </button>
+    </div>
+</div>
+
+<script>
+    let today = new Date();
+    let currentMonth = today.getMonth();
+    let currentYear = today.getFullYear();
+    let startDate = null;
+    let endDate = null;
+
+    function renderCalendar(month, year) {
+        const monthNames = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+        const firstDay = new Date(year, month).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+        const calendarTitle = document.getElementById("calendar-title");
+        calendarTitle.textContent = `${year}년 ${monthNames[month]}`;
+
+        const calendarBody = document.getElementById("calendar-body");
+        calendarBody.innerHTML = "";
+
+        let date = 1;
+        for (let i = 0; i < 6; i++) {
+            const row = document.createElement("tr");
+            for (let j = 0; j < 7; j++) {
+                const cell = document.createElement("td");
+                if (i === 0 && j < firstDay) {
+                    cell.textContent = "";
+                } else if (date > daysInMonth) {
+                    cell.textContent = "";
+                } else {
+                    cell.textContent = date;
+                    cell.dataset.date = `${year}-${month + 1 < 10 ? '0' + (month + 1) : month + 1}-${date < 10 ? '0' + date : date}`;
+                    cell.addEventListener("click", () => handleDateSelection(cell, cell.textContent, month + 1, year)); // 날짜 선택
+                    date++;
+                }
+                row.appendChild(cell);
+            }
+            calendarBody.appendChild(row);
+        }
+        highlightSelectedRange();
+    }
+
+    // 날짜 범위 시각적 표시
+    function highlightSelectedRange() {
+        if (!startDate || !endDate) return;
+
+        const cells = document.querySelectorAll("td");
+        cells.forEach(cell => {
+            const cellDate = cell.dataset.date;
+            if (cellDate >= startDate && cellDate <= endDate) {
+                cell.classList.add("in-range");
+            } else {
+                cell.classList.remove("in-range");
+            }
+        });
+    }
+
+    // 날짜 선택 핸들러
+    function handleDateSelection(cell, day, month, year) {
+        const selectedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+		console.log(cell,'날짜 선택함수 실행확인 : ')
+		
+        if (!startDate || (startDate && endDate)) {
+            // 시작 날짜 선택 또는 범위 초기화
+            startDate = selectedDate;
+            endDate = null;
+        } else {
+            // 끝 날짜 선택
+            endDate = selectedDate;
+            if (startDate > endDate) {
+                [startDate, endDate] = [endDate, startDate]; // 날짜 순서 반전
+            }
         }
 
-        updateCalendar();
+        document.getElementById("start-date").value = startDate;
+        document.getElementById("end-date").value = endDate ? endDate : startDate;
 
-        // 재설정 버튼 클릭 시 필드 초기화
-        document.getElementById("reset-btn").addEventListener("click", function() {
-            document.getElementById("start-date").value = "";
-            document.getElementById("end-date").value = "";
+        highlightSelectedRange();
+
+        // 선택된 날짜 동그랗게 표시
+        const cells = document.querySelectorAll("td");
+        cells.forEach(cell => {
+            const cellDate = cell.dataset.date;
+            if (cellDate === startDate || cellDate === endDate) {
+                cell.classList.add("selected");
+            } else {
+                cell.classList.remove("selected");
+            }
         });
+    }
+
+    // 새 페이지로 이동하는 폼 제출 함수
+    function submitNewForm() {
+        const startDate = document.getElementById("start-date").value;
+        const endDate = document.getElementById("end-date").value;
+        if (startDate && endDate) {
+            alert(`날짜 범위: ${startDate} ~ ${endDate}`);
+        } else {
+            alert("날짜를 선택하세요.");
+        }
+    }
+
+    // 이전 달 이동
+    document.getElementById("prev-month").addEventListener("click", () => {
+        currentMonth = (currentMonth === 0) ? 11 : currentMonth - 1;
+        currentYear = (currentMonth === 11) ? currentYear - 1 : currentYear;
+        renderCalendar(currentMonth, currentYear);
     });
+
+    // 다음 달 이동
+    document.getElementById("next-month").addEventListener("click", () => {
+        currentMonth = (currentMonth === 11) ? 0 : currentMonth + 1;
+        currentYear = (currentMonth === 0) ? currentYear + 1 : currentYear;
+        renderCalendar(currentMonth, currentYear);
+    });
+
+    // 초기 로드 시 현재 달 렌더링
+    window.onload = function() {
+        renderCalendar(currentMonth, currentYear);
+    };
 </script>
+
 </body>
 </html>
